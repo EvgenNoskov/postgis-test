@@ -14,17 +14,6 @@ export default function MapView() {
     const [zoom, setZoom] = useState<number>(defZoom);
     const [center, setCenter] = useState<LatLng>(defLocation);
 
-    const updateMapState = () => {
-        if (!map)
-            return;
-        const c = map.getCenter();
-        const z = map.getZoom();
-        GeoApi().SetLastCenter(c);
-        if (c.equals(center) && z === zoom)
-            return;
-        map.setView(center, zoom)
-    }
-
     const mapRef = useCallback((node: LMap) => {
         if (!node)
             return;
@@ -49,7 +38,16 @@ export default function MapView() {
         })
     }, []);
 
-
+    const updateMapState = () => {
+        if (!map)
+            return;
+        const c = map.getCenter();
+        const z = map.getZoom();
+        GeoApi().SetLastCenter(c);
+        if (c.equals(center) && z === zoom)
+            return;
+        map.setView(center, zoom)
+    }
 
     useEffect(updateMapState, [zoom]);
     useEffect(updateMapState, [center]);
@@ -59,9 +57,8 @@ export default function MapView() {
         if (!map)
             return;
         GeoApi().GetMyLocation().then(v => {
-            if (!v)
-                return;
-            setCenter(new LatLng(v.lat, v.lng))
+            if (v)
+                setCenter(new LatLng(v.lat, v.lng))
         })
     }
     const onSetZoom = (ev: FormEvent<HTMLInputElement>) => {

@@ -3,7 +3,7 @@ import React, { FormEvent, useState } from "react";
 import cls from "./MapView.module.css";
 import { GeoApi } from "@/external";
 
-export function MarkerWidget(props: { map: LMap; }) {
+export function MarkerWidget(props: { map: LMap }) {
     const map = props.map;
     const [adding, setAdding] = useState<Marker | null>(null);
     const [label, setLabel] = useState("Marker label");
@@ -44,10 +44,14 @@ export function MarkerWidget(props: { map: LMap; }) {
         setLabel(str.substring(0, maxLabelLen));
     };
 
+    if(!adding)
+        return <button onClick={begin} className={cls.sidebarRow}>Add marker</button>
+
     return <>
-        <button onClick={begin} className={cls.sidebarRow} disabled={adding != null}>Add marker</button>
-        {adding && <input value={label} className={cls.sidebarRow} onInput={onChangeLabel} maxLength={maxLabelLen} />}
-        {adding && <button onClick={commit} className={cls.sidebarRow}>OK</button>}
-        {adding && <button onClick={revert} className={cls.sidebarRow}>Cancel</button>}
+        <button onClick={begin} className={cls.sidebarRow} disabled={true}>Add marker</button>
+        <input value={label} className={cls.sidebarRow} onInput={onChangeLabel} maxLength={maxLabelLen} />
+        <span className={cls.sidebarRow}>Drag marker and click OK to save the location</span>
+        <button onClick={commit} className={cls.sidebarRow}>OK</button>
+        <button onClick={revert} className={cls.sidebarRow}>Cancel</button>
     </>;
 }
