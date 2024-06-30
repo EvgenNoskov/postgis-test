@@ -2,11 +2,14 @@
     width: 100%;
     height: 100%;
     display: flex;
+    
+    background: #edf2fa;
 }
 
 
 .mapView {
     flex-grow: 1;
+    border-right: 1px solid #d3e3fd;
 }
 
 .sidebar {

@@ -1,9 +1,10 @@
+import { FormEvent, useCallback, useEffect, useState } from "react";
 import { MapContainer, TileLayer } from "react-leaflet";
-import { LatLng, Map as LMap, marker, Marker } from "leaflet";
-import React, { FormEvent, useCallback, useEffect, useState } from "react";
+import { LatLng, Map as LMap, marker, popup } from "leaflet";
+import { GeoApi } from "@/external";
+import { MarkerWidget } from "./MarkerWidget";
 import "leaflet/dist/leaflet.css";
 import cls from "./MapView.module.css";
-import { GeoApi } from "@/external";
 
 const defLocation = new LatLng(51, 0);
 const defZoom = 12;
@@ -12,8 +13,6 @@ export default function MapView() {
     const [map, setMap] = useState<LMap | null>(null);
     const [zoom, setZoom] = useState<number>(defZoom);
     const [center, setCenter] = useState<LatLng>(defLocation);
-
-    const [addingMarker, setAddingMarker] = useState<Marker | null>(null);
 
     const updateMapState = () => {
         if (!map)
@@ -42,8 +41,10 @@ export default function MapView() {
         })
 
         api.GetMarkers().then(markers => {
-            for (const m of markers) {
-                marker(m).addTo(node);
+            for (const item of markers) {
+                const m = marker(item).addTo(node);
+                if (item.label)
+                    m.bindPopup(popup({ content: item.label }));
             }
         })
     }, []);
@@ -63,38 +64,12 @@ export default function MapView() {
             setCenter(new LatLng(v.lat, v.lng))
         })
     }
-
-
     const onSetZoom = (ev: FormEvent<HTMLInputElement>) => {
         if (!map)
             return;
         const value = (ev.target as HTMLInputElement).value;
         const zoom = Math.max(0, Math.min(map.getMaxZoom(), parseInt(value)));
         setZoom(zoom);
-    }
-
-    const onStartAddingMarker = () => {
-        if (!map || addingMarker)
-            return;
-        const m = marker(center, { draggable: true })
-        m.addTo(map)
-        setAddingMarker(m);
-    }
-
-    const commitMarker = () => {
-        if (!map || !addingMarker)
-            return;
-
-        const latLong = addingMarker.getLatLng();
-        GeoApi().AddMarker({ lat: latLong.lat, lng: latLong.lng })
-        setAddingMarker(null)
-    }
-
-    const abortMarker = () => {
-        if (!map || !addingMarker)
-            return;
-        addingMarker.remove();
-        setAddingMarker(null);
     }
 
     return (
@@ -112,9 +87,7 @@ export default function MapView() {
                 <span className={cls.sidebarText}>{center.lng}</span>
                 <button onClick={onSetMyLocation} className={cls.sidebarRow}>Center on my location</button>
                 <input type="number" value={zoom} onInput={onSetZoom} className={cls.sidebarRow} />
-                <button onClick={onStartAddingMarker} className={cls.sidebarRow} disabled={addingMarker != null}>Add marker</button>
-                {addingMarker && <button onClick={commitMarker} className={cls.sidebarRow}>Commit</button>}
-                {addingMarker && <button onClick={abortMarker} className={cls.sidebarRow}>Revert</button>}
+                {map && <MarkerWidget map={map} />}
             </div>
         </div>
     )
