@@ -1,6 +1,6 @@
-import { LocalMarkersApi } from "./LocalGeoApi";
+import { RemoteGeoApi } from "./RemoteGeoApi";
 import { GeoApi } from "./GeoApi";
 
-GeoApi.Inject(new LocalMarkersApi())
+GeoApi.Inject(new RemoteGeoApi())
 
 export * from "./GeoApi";

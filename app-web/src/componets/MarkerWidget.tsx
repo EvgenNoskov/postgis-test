@@ -21,14 +21,19 @@ export function MarkerWidget(props: { map: LMap }) {
             return;
 
         const latLong = adding.getLatLng();
-        adding.setOpacity(1);
         adding.setZIndexOffset(0);
         adding.dragging?.disable();
         if (label)
             adding.bindPopup(popup({ content: label }));
 
-        GeoApi().AddMarker({ lat: latLong.lat, lng: latLong.lng, label });
         setAdding(null);
+        const m = adding;
+        GeoApi().AddMarker({ lat: latLong.lat, lng: latLong.lng, label })
+            .then(() => {
+                m.setOpacity(1);
+            })
+            .catch(() => m.remove())
+
     };
 
     const revert = () => {
@@ -44,7 +49,7 @@ export function MarkerWidget(props: { map: LMap }) {
         setLabel(str.substring(0, maxLabelLen));
     };
 
-    if(!adding)
+    if (!adding)
         return <button onClick={begin} className={cls.sidebarRow}>Add marker</button>
 
     return <>
