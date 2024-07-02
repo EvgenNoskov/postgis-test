@@ -23,6 +23,9 @@ export class LocalMarkersApi implements GeoApi {
                 resolve(null);
         })
     }
+    CanGetMyLocation(): boolean {
+        return isSecureContext && navigator?.geolocation != null
+    }
     async AddMarker(marker: MarkerData): Promise<void> {
         const markers = await this.GetMarkers();
         markers.push(marker);

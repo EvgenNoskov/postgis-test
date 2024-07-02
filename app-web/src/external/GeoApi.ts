@@ -9,6 +9,7 @@ export interface GeoApi {
     SetLastCenter(center: LatLngLiteral): Promise<void>;
 
     GetMyLocation(): Promise<LatLngLiteral| null>;
+    CanGetMyLocation(): boolean;
 
     GetMarkers(): Promise<MarkerData[]>
     AddMarker(marker: MarkerData): Promise<void>;

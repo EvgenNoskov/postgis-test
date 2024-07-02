@@ -1,8 +1,8 @@
-import { FormEvent, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { MapContainer, TileLayer } from "react-leaflet";
 import { LatLng, Map as LMap, marker, popup } from "leaflet";
+import { Sidebar } from "./Sidebar";
 import { GeoApi } from "@/external";
-import { MarkerWidget } from "./MarkerWidget";
 import "leaflet/dist/leaflet.css";
 import cls from "./MapView.module.css";
 
@@ -52,23 +52,6 @@ export default function MapView() {
     useEffect(updateMapState, [zoom]);
     useEffect(updateMapState, [center]);
 
-
-    const onSetMyLocation = () => {
-        if (!map)
-            return;
-        GeoApi().GetMyLocation().then(v => {
-            if (v)
-                setCenter(new LatLng(v.lat, v.lng))
-        })
-    }
-    const onSetZoom = (ev: FormEvent<HTMLInputElement>) => {
-        if (!map)
-            return;
-        const value = (ev.target as HTMLInputElement).value;
-        const zoom = Math.max(0, Math.min(map.getMaxZoom(), parseInt(value)));
-        setZoom(zoom);
-    }
-
     return (
         <div className={cls.view}>
             <MapContainer center={center} zoom={zoom} scrollWheelZoom={true} className={cls.mapView} ref={mapRef}>
@@ -77,15 +60,7 @@ export default function MapView() {
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
             </MapContainer>
-            <div className={cls.sidebar}>
-                <span>Latitude:</span>
-                <span className={cls.sidebarText}>{center.lat}</span>
-                <span>Longitude:</span>
-                <span className={cls.sidebarText}>{center.lng}</span>
-                <button onClick={onSetMyLocation} className={cls.sidebarRow}>Center on my location</button>
-                <input type="number" value={zoom} onInput={onSetZoom} className={cls.sidebarRow} />
-                {map && <MarkerWidget map={map} />}
-            </div>
+            <Sidebar map={map} center={center} zoom={zoom} onSetCenter={setCenter} onSetZoom={setZoom}/>
         </div>
     )
 }

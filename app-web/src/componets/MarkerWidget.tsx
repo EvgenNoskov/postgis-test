@@ -1,6 +1,6 @@
 import { Map as LMap, marker, Marker, popup } from "leaflet";
 import React, { FormEvent, useState } from "react";
-import cls from "./MapView.module.css";
+import cls from "./Sidebar.module.css";
 import { GeoApi } from "@/external";
 
 export function MarkerWidget(props: { map: LMap }) {
