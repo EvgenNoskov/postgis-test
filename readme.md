@@ -1,7 +1,9 @@
+Demo app using next+leafet and flask+postgis to store simple geo markers
+
 1. Dev environment setup:
 
 ```shell
-docker compose -p postgis-dev up --detach
+docker compose -p postgis-dev -f docker-compose.dev.yaml up --detach
 cd ./server
 flask init-db
 ```

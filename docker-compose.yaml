@@ -1,35 +1,25 @@
 services:
   website:
     build:
-      context: ./ci
-      dockerfile: ./website.dev.dockerfile
+      context: ./app-web
     ports:
       - 80:80
 
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
 
   postgis:
     image: postgis/postgis
-    ports:
-      - 5432:5432
     environment:
       POSTGRES_DB: postgis-demo
       POSTGRES_PASSWORD: 12345678
     volumes:
       - postgis-data:/var/lib/postgresql/data
-  
-  pgadmin:
-    image: dpage/pgadmin4
-    ports:
-      - 8080:80
+
+  flask:
+    build:
+      context: ./server
     depends_on:
       - postgis
-    volumes:
-      - pgadmin-data:/var/lib/pgadmin
-    environment:
-      - PGADMIN_DEFAULT_EMAIL=pgadmin@example.com
-      - PGADMIN_DEFAULT_PASSWORD=12345678
+    command: sh -c "flask --app ~/server/app init-db && waitress-serve --port=5000 --call app:create_app"
 
 
 volumes:

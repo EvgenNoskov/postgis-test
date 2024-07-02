@@ -1,6 +1,5 @@
 import os
 from flask import Flask
-from flask_cors import CORS
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
@@ -11,18 +10,20 @@ def create_app(test_config=None):
         DB_USER="postgres",
         DB_USER_PASS="12345678"
     )
+    if os.environ.get("ENV") == "prod":
+        app.config["DB_HOST"] = "postgis"
 
     if test_config is None:
         app.config.from_pyfile('config.py', silent=True)
     else:
         app.config.from_mapping(test_config)
-
+    
     try:
         os.makedirs(app.instance_path)
     except OSError:
         pass
 
-    from .data import db;
+    from .data import db
     app.teardown_appcontext(db.close_db)
     app.cli.add_command(db.init_db_command)
 
@@ -34,3 +35,6 @@ def create_app(test_config=None):
 
     return app
 
+def init_db():
+    from .data import db
+    db.init_db()

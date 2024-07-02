@@ -1,0 +1,13 @@
+[project]
+name = "app"
+version = "0.0.1"
+description = "Postgis demo flask server"
+requires-python = ">=3.8"
+dependencies = [
+    "flask",
+    "sqlalchemy"
+]
+
+[build-system]
+requires = ["flit_core<4"]
+build-backend = "flit_core.buildapi"
