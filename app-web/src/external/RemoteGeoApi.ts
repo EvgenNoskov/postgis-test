@@ -2,7 +2,7 @@ import { MarkerData, GeoApi } from "./GeoApi";
 import { LocalMarkersApi } from "./LocalGeoApi";
 
 export class RemoteGeoApi extends LocalMarkersApi implements GeoApi {
-    private readonly _endpoint: string = "http://localhost:5000";
+    private readonly _endpoint: string = "/api";
 
 
     override async AddMarker(marker: MarkerData): Promise<void> {

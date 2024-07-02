@@ -24,14 +24,13 @@ def create_app(test_config=None):
 
     from .data import db;
     app.teardown_appcontext(db.close_db)
+    app.cli.add_command(db.init_db_command)
 
 
     from .controllers import markers
 
     app.register_blueprint(markers.bp)
     
-    if app.config["SECRET_KEY"] == "dev":
-        CORS(app)
 
     return app
 

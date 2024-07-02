@@ -1,12 +1,23 @@
 services:
+  website:
+    build:
+      context: ./ci
+      dockerfile: ./website.dev.dockerfile
+    ports:
+      - 80:80
+
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
   postgis:
     image: postgis/postgis
     ports:
-        - 5432:5432
+      - 5432:5432
     environment:
-        POSTGRES_PASSWORD: 12345678
+      POSTGRES_DB: postgis-demo
+      POSTGRES_PASSWORD: 12345678
     volumes:
-        - postgis-data:/var/lib/postgresql/data
+      - postgis-data:/var/lib/postgresql/data
   
   pgadmin:
     image: dpage/pgadmin4
