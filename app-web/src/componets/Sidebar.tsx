@@ -33,28 +33,26 @@ export function Sidebar(props: { map: LMap | null; center: LatLng; zoom: number;
         setHidden(false);
         setTimeout(() => map?.invalidateSize());
     }
-
-    if (hidden)
-        return <button className={cls.menuBtn} onClick={show}>Show sidebar</button>
-
-    return (
+    return (<>
+        <button className={`${cls.menuBtn} ${hidden ? "": cls.hidden}`} onClick={show}>Show sidebar</button>
         <div className={`${cls.sidebarBlock} ${hidden ? cls.hidden : ""}`}>
             <button className={cls.closeBtn} onClick={hide}>Hide sidebar</button>
             <div className={cls.sidebar}>
                 <div className={cls.separator}></div>
-                
+
                 <button onClick={onGetMyLocation} className={cls.sidebarRow} disabled={!GeoApi().CanGetMyLocation()}>Center on my location</button>
                 <span>Latitude:</span>
                 <span className={cls.sidebarText}>{center.lat}</span>
                 <span>Longitude:</span>
                 <span className={cls.sidebarText}>{center.lng}</span>
                 <span>Zoom:</span>
-                <input type="number" value={zoom} onInput={onZoomChange} className={cls.zoomInput}/>
+                <input type="number" value={zoom} onInput={onZoomChange} className={cls.zoomInput} />
 
                 <div className={cls.separator}></div>
 
                 {map && <MarkerWidget map={map} />}
             </div>
         </div>
+    </>
     );
 }
